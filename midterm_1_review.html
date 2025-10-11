@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LARC 316 Midterm Test Prep</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #a8e6cf 0%, #dcedc8 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .plant-counter {
+            text-align: center;
+            color: #2e7d32;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .plant-image {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+        }
+
+        .question {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #66bb6a;
+        }
+
+        .answer-input.correct {
+            border-color: #4caf50;
+            background-color: #f1f8f4;
+        }
+
+        .answer-input.incorrect {
+            border-color: #f44336;
+            background-color: #fef5f5;
+        }
+
+        .correct-answer-text {
+            margin-top: 5px;
+            color: #f44336;
+            font-size: 14px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .correct-answer-text.show {
+            display: block;
+        }
+
+        button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Roboto', 'Arial', sans-serif;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #222;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        .score-display {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #333;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .score-display.show {
+            display: block;
+        }
+
+        .plant-info {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #2e7d32;
+            display: none;
+        }
+
+        .plant-info.show {
+            display: block;
+        }
+
+        .plant-info h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .info-section {
+            margin-bottom: 15px;
+        }
+
+        .info-section h4 {
+            color: #555;
+            font-size: 15px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        #finalResults {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        #finalResults h2 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        #missedPlantsList {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        #missedPlantsList h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        #missedPlantsList ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #missedPlantsList li {
+            padding: 10px;
+            margin: 10px 0;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>Plant Identification Review</h1>
+            <p style="color: #666;">All 73 plants on our midterm are on here - text me if something is broken, wrong, or anything in the What's App group</p>
+        </div>
+
+        <div class="plant-counter" id="plantCounter"></div>
+
+        <img id="plantImage" class="plant-image" alt="Plant to identify">
+
+        <div class="question-block">
+            <div class="question">1. What is the Latin name for this?</div>
+            <input type="text" id="q1" class="answer-input" placeholder="Type your answer here..." autocomplete="off">
+            <div class="correct-answer-text" id="answer1"></div>
+        </div>
+
+        <div class="question-block">
+            <div class="question">2. What is the common name for this plant?</div>
+            <input type="text" id="q2" class="answer-input" placeholder="Type your answer here..." autocomplete="off">
+            <div class="correct-answer-text" id="answer2"></div>
+        </div>
+
+        <div class="question-block">
+            <div class="question">3. What is the family of this plant?</div>
+            <input type="text" id="q3" class="answer-input" placeholder="Type your answer here..." autocomplete="off">
+            <div class="correct-answer-text" id="answer3"></div>
+        </div>
+
+        <div class="question-block">
+            <div class="question">4. What type of plant is this?</div>
+            <input type="text" id="q4" class="answer-input" placeholder="Type your answer here..." autocomplete="off">
+            <div class="correct-answer-text" id="answer4"></div>
+        </div>
+
+        <button id="submitBtn">Submit Answers</button>
+        
+        <div class="score-display" id="scoreDisplay"></div>
+
+        <div class="plant-info" id="plantInfo">
+            <h3>Additional Plant Information</h3>
+            <div class="info-section">
+                <h4>Leaf Characteristics</h4>
+                <p id="leafInfo"></p>
+            </div>
+            <div class="info-section">
+                <h4>How to Distinguish</h4>
+                <p id="distinguishInfo"></p>
+            </div>
+        </div>
+
+        <div class="button-group" id="navigationButtons" style="display: none;">
+            <button id="nextBtn">Next Plant</button>
+            <button id="prevBtn">Previous Plant</button>
+        </div>
+    </div>
+
+    <div id="finalResults" style="display: none;">
+        <div id="finalScore"></div>
+        <div id="missedPlantsList"></div>
+        <button id="restartBtn" style="margin-top: 30px;">Start New Review</button>
+    </div>
+
+    <script>
+        const plants = [
+            {
+                image: "https://www.treesandshrubsonline.org/site/assets/files/6498/parrotia-persica-14.jpg",
+                answers: {q1: "Parrotia persica", q2: "Persian ironwood", q3: "Hamamelidaceae", q4: "D tr"},
+                leafInfo: "Parrotia persica has simple, alternate leaves that are ovate to obovate in shape. The leaves have wavy margins and turn spectacular shades of yellow, orange, and red in fall. They are arranged alternately along the stem, not opposite.",
+                distinguishInfo: "Parrotia persica has smooth, wavy (undulating) leaf margins, while Fothergilla 'Mt. Airy' has coarsely toothed margins in the upper half of the leaf. Fothergilla leaves also tend to be smaller and more rounded with a slightly fuzzy underside."
+            },
+            {
+                image: "https://www.thegreenhousepnw.com/cdn/shop/files/A7BC6AC8-7F1C-434A-81CA-27F7C8F893BB.jpg?v=1697487175&width=823",
+                answers: {q1: "Escallonia fradesii 'Pink Princess'", q2: "Pink Princess escallonia", q3: "Escalloniaceae", q4: "E sh"},
+                leafInfo: "Escallonia has simple, alternate, evergreen leaves that are small, glossy, and slightly serrated. The leaves are thick and leathery with a dark green upper surface. They are arranged alternately along the stems and remain on the plant year-round.",
+                distinguishInfo: "Escallonia can be distinguished from other evergreen shrubs by its sticky, resinous foliage that has a distinct aromatic scent when crushed. The tubular flowers in clusters are also distinctive. It differs from similar-looking plants like Hebe by having alternate (not opposite) leaves and more tubular flowers. Unlike photinia or other similar glossy-leaved shrubs, Escallonia has smaller leaves and produces abundant tubular flowers in pink, red, or white."
+            },
+            {
+                image: "https://tse2.mm.bing.net/th/id/OIP.4GbVBGIVfZrMuMeF5GkmygHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3",
+                answers: {q1: "Albizia julibrissin", q2: "silk tree", q3: "Fabaceae", q4: "D tr"},
+                leafInfo: "The leaves are fern-like and give the tree the appearance of being light and feathery. When it rains and during the night the leaves close downward.",
+                distinguishInfo: "Albizia julibrissin has very fine, fern-like bipinnately compound leaves with numerous tiny leaflets, while Robinia pseudoacacia has once-pinnate leaves with larger oval leaflets and paired thorns at the leaf bases. Gymnocladus dioicus also has bipinnate leaves like Albizia, but they are much coarser with far fewer and much larger leaflets, creating a bold texture rather than a delicate one."
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Vrouwenmantel_%28Alchemilla_mollis%29_d.j.b_02.jpg/1920px-Vrouwenmantel_%28Alchemilla_mollis%29_d.j.b_02.jpg",
+                answers: {q1: "Alchemilla mollis", q2: "lady's mantel", q3: "Rosaceae", q4: "D p"},
+                leafInfo: "The leaves are pale-green, palmately veined, soft, and downy.  They are simple palmately lobed that are arranged in a basal rosette.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://www.promessedefleurs.com/media/opti_image/webp/ri/1640/catalog/product/A/r/Aronia-melanocarpa-Autumn-Magic-NOBLE-83947-3.webp",
+                answers: {q1: "Aronia melanocarpa", q2: "black chokeberry", q3: "Rosaceae", q4: "D sh"},
+                leafInfo: "The leaves are alternate, simple,  elliptic 1 to 3 inches, glossy, dark green finely serrate leaves that have a wine-red fall color.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://gardenofwales.gardenexplorer.org/AppImages/5220.jpg",
+                answers: {q1: "Campsis x tagliabuana 'Mme. Galen'", q2: "hybrid trumpet creeper", q3: "Bignoniaceae", q4: "D cl"},
+                leafInfo: "The leaves are compound, and odd-pinnate (to 15 inches long) which are shiny green above and glabrous below. Each leaf has 7-11 ovate leaflets.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://garden.org/pics/2013-10-22/robertduval14/3ba39a-200.jpg",
+                answers: {q1: "Cenchrus alopecuroides", q2: "fountain grass", q3: "Poaceae", q4: "D g"},
+                leafInfo: "The leaves are compound, and odd-pinnate (to 15 inches long) which are shiny gLeaves grow near the base of stems, are alternate, simple, sheathing, linear, scabrous, bright green, and up to 2 inches long and a quarter of an inch wide with amber yellow fall color.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://littleprinceplants.com/wp-content/uploads/Ceratostigma-plumbaginoides-AUGUST3-scaled.jpg",
+                answers: {q1: "Ceratostigma plumbaginoides", q2: "leadwort", q3: "Plumbaginaceae", q4: "D p"},
+                leafInfo: "The leaves are shiny, simple, and alternate with obovate or ovate leaves. The margins are entire. They are elongated oval 1.5 to 2 inches long; new growth is burgundy; copper, bronze tinge in fall.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://mortonarb.org/app/uploads/2020/12/90497_ca_object_representations_media_38643_large-1120x840-c-default.jpg",
+                answers: {q1: "Cornus kousa", q2: "Kousa dogwood", q3: "Cornaceae", q4: "D tr"},
+                leafInfo: "Leaves are shiny dark green and become reddish-purple to scarlet in the fall. They appear opposite, simple, oval and have entire margins. They measure 2.5 to 4 inches long and 2 to 2.5 inches wide.",
+                distinguishInfo: "Cornus kousa leaves are generally more elliptical with distinctive rusty brown tufts of hair in the vein axils on the underside, while Cornus 'Eddie's White Wonder' has broader, more ovate leaves that are more similar to C. florida. 'Eddie's White Wonder' leaves also tend to have a more whitish or grayish pubescence on the underside rather than the rusty tufts characteristic of C. kousa."
+            },
+            {
+                image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhIZ0F-AaRWxGmchrcPQ84v1n3raqz0jL49mtFAo_Qe_KZ_4YAmE5DXgqLx75gwoYrWDmtpaOBocItUBkEwYpplG4h-FLd-Uglz5rQGqVpre7IVT7ostx7LB2jQ-XHTAwGDptlM-m3z7Mlp/s200/Cotinus-coggygria.jpg",
+                answers: {q1: "Cotinus coggygria", q2: "smoke bush", q3: "Anacardiaceae", q4: "D sh"},
+                leafInfo: "The leaves are alternate, simple, purplish leaves with parallel veins and entire margins. Leaves can be green or reddish-purple. They are 1.5 to 3.5 inches long",
+                distinguishInfo: "Cornus kousa leaves are generally more elliptical with distinctive rusty brown tufts of hair in the vein axils on the underside, while Cornus 'Eddie's White Wonder' has broader, more ovate leaves that are more similar to C. florida. 'Eddie's White Wonder' leaves also tend to have a more whitish or grayish pubescence on the underside rather than the rusty tufts characteristic of C. kousa."
+            },
+            {
+                image: "https://plantsam.com/wp-content/uploads/2021/11/Helleborus-argutifolius.jpg",
+                answers: {q1: "Helleborus argutifolius", q2: "Corsican hellebore", q3: "Ranuculaceae", q4: "E p"},
+                leafInfo: "The leaves are alternate, palmately divided with 3 leaflets. They can be basal or cauline, palmately compound, coriaceous, glabrous; petiloes elongate, peltate; leaflets 3-9, irregularly toothed or serrate",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://garden.org/pics/2012-01-16/Marilyn/05fb40.jpg",
+                answers: {q1: "Helleborus x hybridus", q2: "Oriental hellebore", q3: "Ranuculaceae", q4: "E p"},
+                leafInfo: "The leaves are divided into 7 to 9 segments with an umbrella-like shape. Tough, almost woody stems have leaves and terminal inflorescence on the same stem. Basal or cauline, palmately compound, coriaceous, glabrous; petiloes elongate, peltate; leaflets 3-9, irregularly toothed or serrate",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://landscapeplants.oregonstate.edu/sites/plantid7/files/styles/medium/public/plantimage/hymacro291A_0.jpg?itok=SqfL2YOn",
+                answers: {q1: "Hydrangea macrophylla", q2: "common hydrangea", q3: "Hydrangeaceae", q4: "D sh"},
+                leafInfo: "The leaves are pposite, simple, stalked, toothed, and sometimes lobed, lustrous medium to dark green above, underside glabrous or may have short hairs, stout petiole about 1 inch long.; Obovate to elliptic or broadly ovate, 4-8 inches long, 3-6 inches wide, short acuminate tip, coarsely serrate",
+                distinguishInfo: "Hydrangea macrophylla has broader, more rounded leaves with coarse, regular serrations and a thicker, glossier texture, while Hydrangea paniculata has more elongated, elliptical to ovate leaves that taper to a point with finer serrations. H. paniculata leaves are also typically thinner and less glossy than H. macrophylla."
+            },
+            {
+                image: "https://lh3.googleusercontent.com/blogger_img_proxy/AEn0k_vflSXiiddD91zSPOiY5w7_B8LFPyzOM9OPu9uaXzbUY2h3fui6X8v06SI3TG2jkEx2KulChVJ_kdhAJ9zXkOwcSzmCpYGd7WXS8cgLvOv5GBnDf6GTktJ_UocdWrfJbDl5lv7ZyOJp33Je-AQ=s0-d",
+                answers: {q1: "Hydrangea paniculata", q2: "paniculate hydrangea", q3: "Hydrangeaceae", q4: "D sh"},
+                leafInfo: "The leaves are opposite and serrate, whorled at branch tips.",
+                distinguishInfo: "Hydrangea macrophylla has broader, more rounded leaves with coarse, regular serrations and a thicker, glossier texture, while Hydrangea paniculata has more elongated, elliptical to ovate leaves that taper to a point with finer serrations. H. paniculata leaves are also typically thinner and less glossy than H. macrophylla."
+            },
+            {
+                image: "https://landscapeplants.oregonstate.edu/sites/plantid7/files/styles/medium/public/plantimage/hyqu86.jpg?itok=OM6-WmXV",
+                answers: {q1: "Hydrangea quercifolia", q2: "oak leaf hydrangea", q3: "Hydrangeaceae", q4: "D sh"},
+                leafInfo: "Unique leaves for a hydrangea that are shaped like an oak leaf.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Nassella_tenuissima.jpg/500px-Nassella_tenuissima.jpg",
+                answers: {q1: "Nassella tenuissima", q2: "Mexican feather grass", q3: "Poaceae", q4: "D g"},
+                leafInfo: "Dense green fountain of hair-like leaves that are rolled inward. Turns light brown in winter.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://keyserver.lucidcentral.org/weeds/data/media/Images/oenothera_lindheimeri/thumbs/gauralindheimeri7_sml.jpg",
+                answers: {q1: "Oenothera lindheimeri", q2: "Gaura", q3: "Onagraceae", q4: "D p"},
+                leafInfo: "The leaves form in a basal clump. They are lance-shaped and the margins are entire or slightly toothed. The foliage is dark green to burgundy. The foliage dies back during the winter, except in warmer climates where it will remain evergreen. The flowers are on long wiry stems that are 3 to 5 feet tall.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/d/db/Virginia_creeper_Parthenocissus_quinquifolia_169.JPG",
+                answers: {q1: "Parthenocissus quinquefolia", q2: "Virginia creeper", q3: "Vitaceae", q4: "D cl"},
+                leafInfo: "The Virginia creeper has alternate, compound-palmate leaves (usually 5 saw-toothed leaflets, each leaflet to 6â€ long) that emerge purplish in spring, mature to dull green in summer and change to attractive shades of purple and crimson red in fall.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://d7rks6gxdl569.cloudfront.net/thumbnails/qugal1.jpg",
+                answers: {q1: "Quercus garryana", q2: "Garry oak", q3: "Fagaceae", q4: "D tr N"},
+                leafInfo: "The leaves are simple, lobed, and alternate. They have pinnate venation and are lustrous and tomentose.",
+                distinguishInfo: ""
+            },
+            {
+                image: "http://www.stauden-karl.de/wp-content/uploads/2017/08/Rudbeckia-fulgida-sullivantii_20170814.jpg",
+                answers: {q1: "Rudbeckia fulgida var. sullivantii", q2: "orange coneflower", q3: "Asteraceae", q4: "D p"},
+                leafInfo: "The leaves are simple and alternate or basal. They are leathery with pinnate venation that are either lanceolate or ovate with acuminate tips.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/1/16/Tilia-tomentosa.JPG",
+                answers: {q1: "Tilia tomentosa", q2: "silver linden", q3: "Malvaceae", q4: "D tr"},
+                leafInfo: "The leaves are simple, alternate, heart-shaped with pointed tips, and measure up to 4 inches long. The base of the leaf is oblique. They have serrate to dentate margins and are glossy green on the upper sides, and fuzzy silvery-white underneath. The foliage is a pale yellow in the fall.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Acer_griseum5.jpg/1920px-Acer_griseum5.jpg",
+                answers: {q1: "Acer griseum", q2: "paperbark maple", q3: "Sapindaceae", q4: "D tr"},
+                leafInfo: "The leaves are 3-6 inches, opposite, palmately compound trifoliate leaves. The middle leaflet is short-stalked. Silvery with fine hairs on the underside; bright red and orange fall color; one of the last maples to develop fall color; leaves persist into winter. Conspicuous pubescent petiole & lower vein axils",
+                distinguishInfo: "Acer griseum is unusual among maples in having trifoliate (three-leaflet) compound leaves rather than the typical palmately lobed simple leaves found in most maples."
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/d/d6/Acer_palmatum0.jpg",
+                answers: {q1: "Acer palmatum", q2: "common Japanese maple", q3: "Sapindaceae", q4: "D tr"},
+                leafInfo: "The leaves are 3-6 inches, opposite, palmately compound trifoliate leaves.Leaves are 2 to 5 inches, opposite, and simple with five to nine lobes. Most are deeply lobed. Color varies from green during summer to yellow, bronze, purple, and red in fall (color varies with cultivar).",
+                distinguishInfo: "Acer palmatum has distinctively deeply dissected palmately lobed leaves with 5-9 narrow, pointed lobes that are cut almost to the base of the leaf, giving it a very delicate, lacy appearance compared to most other maples. The leaves are also smaller and more finely textured than those of larger maples like A. platanoides or A. rubrum, and often have brilliant red, purple, or variegated coloration even in the growing season."
+            },
+            {
+                image: "https://d7rks6gxdl569.cloudfront.net/thumbnails/xchpl1.jpg",
+                answers: {q1: "x Chitalpa tashkentensis 'Pink Dawn'", q2: "pink chitalpa", q3: "Bignoniaceae", q4: "D tr"},
+                leafInfo: "The leaves are simple and can be alternate or opposite. They are either elliptic or lanceolate with acuminate tips, with pinnate venation.",
+                distinguishInfo: "Chitalpa tashkentensis displays the classic Bignoniaceae family traits of large, showy, trumpet-shaped tubular flowers with frilly or ruffled petal edges. It also produces the characteristic long, narrow seed capsules (pods) typical of the family, though they are often sterile in this hybrid."
+            },
+            {
+                image: "https://petalsfromthepast.com/wp-content/uploads/Fothergilla-MountAir_3PbF9wXV22dk.jpg",
+                answers: {q1: "Fothergilla x intermedia 'Mt. Airy'", q2: "Mt. Airy fothergilla", q3: "Hamamelidaceae", q4: "D sh"},
+                leafInfo: "The leaves are alternate, simple, 2- to 4-inch-long, leathery leaves are obovate to oblong with rounded teeth toward the apex. Color is dark green above to blue or gray green tomentose undersides. Showy fall colors in reds, yellows and purples.",
+                distinguishInfo: "Fothergilla 'Mt. Airy' has coarsely toothed leaf margins in the upper half of the leaf and a slightly fuzzy underside, while Parrotia persica has smooth, wavy (undulating) margins and smooth surfaces. Fothergilla leaves are also generally smaller and more rounded than Parrotia's larger, more elongated leaves."
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Fuchsia_magellanica.jpg/500px-Fuchsia_magellanica.jpg",
+                answers: {q1: "Fuchsia magellanica", q2: "hardy fuchsia", q3: "Onagraceae", q4: "D sh/p"},
+                leafInfo: "The leaves are oval, dentate, medium green leaves 2 to 5 inches long. Whorls of 3 or 4 per node, sometimes opposite. Leaf blade elliptic-ovate or ovate to lanceolate.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/GinkgoLeaves.jpg/1024px-GinkgoLeaves.jpg",
+                answers: {q1: "Ginkgo biloba", q2: "ginkgo", q3: "Ginkgoaceae", q4: "D tr"},
+                leafInfo: "The leaves are 2 to 3 inches long, emerald green, fan-shaped, alternate, simple leaf in clusters of three to five; yellow fall color. Dichotomously veined.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://www.whiteflowerfarm.com/mas_assets/cache/image/5/3/6/f/21359.Jpg",
+                answers: {q1: "Hakonechloa macra 'Aureola'", q2: "variegated hakone grass", q3: "Poaceae", q4: "D g"},
+                leafInfo: "The leaves are yellow with a narrow green stripe near the leaf margin.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Leafage_of_Koelreuteria_paniculata.JPG/1024px-Leafage_of_Koelreuteria_paniculata.JPG",
+                answers: {q1: "Koelreuteria paniculata", q2: "goldenrain tree", q3: "Sapindaceae", q4: "D tr"},
+                leafInfo: "Leaves are pinnately compound, 6 to 18 inches long, and have 7-15 leaflets.",
+                distinguishInfo: "Koelreuteria paniculata displays the typical Sapindaceae trait of pinnately compound leaves with serrated leaflets. It also produces the distinctive papery, bladder-like seed capsules (lantern-shaped fruits) that are characteristic of many members of the soapberry family."
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/2/2c/MetaseqLeaves.jpg",
+                answers: {q1: "Metasequoia glyptostroboides", q2: "dawn redwood", q3: "Cupressaceae", q4: "D tr C"},
+                leafInfo: "The leaves are linear, subopposite, crowded on pins, pliable, feathery, fern-like, and soft to the touch. Foliage emerges light green in spring, matures to deep green in summer and turns red-bronze in fall. Below, leaves are light green in color and have 2 inconspicuous stomatal bands. Leaves are less than an inch long and wide.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Pseudolarix_amabilis_2.jpg/1920px-Pseudolarix_amabilis_2.jpg",
+                answers: {q1: "Pseudolarix amabilis", q2: "golden larch", q3: "Pinaceae", q4: "D tr C"},
+                leafInfo: "The soft linear needled foliage is spirally arranged, light green on the upper surface, and bluish-green on the undersides with two stomatal bands. They are flat, slightly curved to straight, 1.5 to 2.5 inches long, only 2-3 mm wide, whorled, and alternate. The fall color is a brilliant gold or orange yellow.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Japanese_Stewartia_Stewartia_pseudocamellia_Leaves_Vertical_2000px.jpg/800px-Japanese_Stewartia_Stewartia_pseudocamellia_Leaves_Vertical_2000px.jpg",
+                answers: {q1: "Stewartia pseudocamellia", q2: "Japanese stewartia", q3: "Theaceae", q4: "D tr"},
+                leafInfo: "The leaves are 2 to 4.5 inches long and 1-2 inches wide. They are dark green, alternate, simple, and have a brilliant fall color of yellow, red, and purple. The upper surface of the leaf is smooth, and the undersides have tufts of hair. The margins are serrate.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Vitex_agnus_castus.jpg/800px-Vitex_agnus_castus.jpg",
+                answers: {q1: "Vitex agnus-castus", q2: "chaste tree", q3: "Lamiaceae", q4: "D sh"},
+                leafInfo: "Compound branches have 5-9 lance-shaped leaflets and are up to 4-8 inches long by 2-4 inches wide. The leaves are opposite in arrangement, and they have a menthol fragrance when bruised. The upper surface is grayish-green, and the undersides are gray.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Styrax_japonicus_Styrak_japo%C5%84ski_2015_04.jpg/1920px-Styrax_japonicus_Styrak_japo%C5%84ski_2015_04.jpg",
+                answers: {q1: "Styrax japonicus", q2: "Japanese snowbell", q3: "Styracaceae", q4: "D tr"},
+                leafInfo: "The leaves are alternate and simple. They are broad-elliptic to elliptic-oblong, acuminate, cuneate. They are shallowly toothed, and dark glossy green. They are 1-3 inches long and 1 inch wide.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://woodyplants.nres.uiuc.edu/images/plants/ace/acefrar10.jpg",
+                answers: {q1: "Acer x freemanii 'Armstrong'", q2: "Armstrong maple", q3: "Sapindaceae", q4: "D tr"},
+                leafInfo: "The leaves are 5-lobed (versus 3-lobed in red maples); margins are coarsely toothed and lobed; glaucous under. They are simple and opposite.",
+                distinguishInfo: "Acer x freemanii 'Armstrong' has moderately deeply lobed leaves (5 lobes) with silvery or whitish undersides, showing its hybrid parentage between red and silver maple. The leaf lobes are more deeply cut than typical red maple but not as extremely dissected as silver maple, creating an intermediate appearance."
+            },
+            {
+                image: "https://landscapeplants.oregonstate.edu/sites/plantid7/files/styles/medium/public/plantimage/acfreem186A.jpg?itok=ZqIEjDrl",
+                answers: {q1: "Acer x freemanii 'Morgan'", q2: "Morgan maple", q3: "Sapindaceae", q4: "D tr"},
+                leafInfo: "The leaves are 5-lobed and simple and opposite.",
+                distinguishInfo: "Acer x freemanii 'Morgan' has leaves with moderate lobing (5 lobes) that are intermediate between its red maple and silver maple parents, deeper than typical red maple but shallower than silver maple. The leaves have silvery-white undersides inherited from the silver maple parent."
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Acer_rubrum.jpg/500px-Acer_rubrum.jpg",
+                answers: {q1: "Acer rubrum", q2: "red maple", q3: "Sapindaceae", q4: "D tr"},
+                leafInfo: "Leaves are palmately veined with 3-5 principal triangular lobes with the lower 2 being much smaller. Margins are irregularly and coarsely toothed, medium to dark green above, grayish beneath with hairy veins, petiole 2-4 inches long and red. Brilliant red, orange, and yellow colors show during fall.",
+                distinguishInfo: "Acer rubrum has shallower leaf lobing and less silvery-white undersides compared to both 'Armstrong' and 'Morgan', which inherit deeper sinuses and more prominent silvery leaf backs from their silver maple parent."
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/f/fc/Bergenia_crassifolia1.JPG",
+                answers: {q1: "Bergenia crassifolia", q2: "bergenia", q3: "Saxifragaceae", q4: "E p"},
+                leafInfo: "The leaves are large, 8 by 7 inch glossy evergreen leaves produced in spreading clumps. They are leathery, fine-toothed, obovate-rounded.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Carpinus_fruit.jpg/500px-Carpinus_fruit.jpg",
+                answers: {q1: "Carpinus betulus 'Fastigiata'", q2: "fastigiate hornbeam", q3: "Betuluaceae", q4: "D tr"},
+                leafInfo: "The leaves are dark green, simple, alternate, ovate, and have doubly serrated margins. The veins give the leaf a quilted appearance. They measure 2-4 inches in length. In the fall, the leaf color transitions to a bright yellow.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Cercidiphyllum_japonicum_JPG01b.jpg/500px-Cercidiphyllum_japonicum_JPG01b.jpg",
+                answers: {q1: "Cercidiphyllum japonicum", q2: "katsura", q3: "Cercidiphyllaceae", q4: "D tr"},
+                leafInfo: "Short shoots bear simple opposite to subopposite, 2-4 inch leaves. They are broadly cordate (heart-shaped) or reniform, palmately webbed veined leaves with crenate, entire, or finely serrate margins.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Euonymus_fortunei_5422029.jpg/500px-Euonymus_fortunei_5422029.jpg",
+                answers: {q1: "Euonymus fortunei", q2: "wintercreeper", q3: "Celestraceae", q4: "E sh/cl"},
+                leafInfo: "The leaves of young plants can be or are variegated. Paired evergreen leaves with broad, shallow, or rounded teeth; dark green and silvery white vein either on edge or mid-leaf. Opposite, simple, ovate-elliptic, 1 to 3 inches long and 3/4 to 1 1/2 inches across, crenate-serrate, thinly coriaceous.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/White_Ash_Leaves.jpg/2560px-White_Ash_Leaves.jpg",
+                answers: {q1: "Fraxinus americana", q2: "white ash", q3: "Oleaceae", q4: "D tr"},
+                leafInfo: "The 8 to 12 inch long leaves of the white ash are odd-pinnate compound leaves with 7 leaflets (less frequently 5 or 9). Oval to oblong-lanceolate leaflets (3 to 5 inches long) are dark green above and whitish green below with smooth margins. The foliage turns yellow with purple shading in the fall.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://www.cleancutproperty.com/wp-content/uploads/2012/08/Stella-De-Oro-Day-Lily.jpg",
+                answers: {q1: "Hemerocallis 'Stella d'Oro'", q2: "Stella d'Oro daylily", q3: "Asphodelaceae", q4: "D p"},
+                leafInfo: "The leaves are long, narrow, strap-like and simple that emerge from a basal rosette and arch gracefully outward. The leaves are grass-like, linear, and smooth-margined (entire) with a prominent midrib.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Liquidambar_feuilles_FR_2013.jpg/1920px-Liquidambar_feuilles_FR_2013.jpg",
+                answers: {q1: "Liquidambar styraciflua", q2: "American sweetgum", q3: "Altingiaceae", q4: "D tr"},
+                leafInfo: "The Sweetgum tree has alternate, simple, serrate, palmate venation, glossy, deciduous, long-stalked, deep green leaves (4-8 across) with toothed margins. Each leaf has 5-7 deeply separated, pointed, star-shaped lobes. Leaves are fragrant when bruised.",
+                distinguishInfo: "American sweetgum has alternate leaf arrangement, while all maples have opposite leaf arrangement. Sweetgum leaves also tend to be more uniformly star-shaped with 5-7 pointed lobes radiating symmetrically."
+            },
+            {
+                image: "https://www.udenhout-trees.nl/site/assets/files/1753/magnolia_galaxy_blad_boomkwekerij_udenhout.350x0.jpg",
+                answers: {q1: "Magnolia 'Galaxy'", q2: "Galaxy magnolia", q3: "Magnoliaceae", q4: "D tr"},
+                leafInfo: "The leaves are simple, alternate, leathery and glabrous. They are elliptic or obovate with entire margins.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://d7rks6gxdl569.cloudfront.net/thumbnails/plhil1.jpg",
+                answers: {q1: "Platanus x hispanica", q2: "London plane", q3: "Platanaceae", q4: "D tr"},
+                leafInfo: "The leaves are simple and lobed, and also alternate. They are ovate with cordate bases with uninteresting fall colour.",
+                distinguishInfo: "Platanus x hispanica has alternate leaf arrangement while all maples have opposite leaves, which is the most reliable distinguishing feature. London plane leaves also tend to have a more truncated or straight base where the petiole attaches and are generally thicker and more leathery than maple leaves."
+            },
+            {
+                image: "https://tse2.mm.bing.net/th/id/OIP.soLoNDY0imHnVpR_SR7VNQHaFj?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3",
+                answers: {q1: "Rhododendron 'Hansel'", q2: "Hansel rhododendron", q3: "Ericaceae", q4: "E sh"},
+                leafInfo: "The leaves can be green or purple; look whorled, but they are alternately/radially arranged; curvature of leaf keeps it cool; has persistent hairs (indumentum) on backs of leaves (which are orange and velvety); leathery on top.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Rugosa_Rose_%28Rosa_rugosa%29_-_Oslo%2C_Norway_2020-08-04.jpg/1280px-Rugosa_Rose_%28Rosa_rugosa%29_-_Oslo%2C_Norway_2020-08-04.jpg",
+                answers: {q1: "Rosa rugosa", q2: "Japanese beach rose", q3: "Rosaceae", q4: "D sh"},
+                leafInfo: "The leaves have a dark green upper surface, alternate, pinnately compounded leaves with 5 to 9 leaflets, while leaflets are elliptic to obovate, 1 to 2-inch long, serrate",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/2020_year._Herbarium._Sorbus_aucuparia._img-036.jpg/800px-2020_year._Herbarium._Sorbus_aucuparia._img-036.jpg",
+                answers: {q1: "Sorbus aucuparia", q2: "European mountain ash", q3: "Rosaceae", q4: "D tr"},
+                leafInfo: "Leaves are 5 to 9 inches long, with 9-15 leaflets. The base serrate from middle upward, and entire in the lower third. Foliage provides good color in the fall.",
+                distinguishInfo: "Sorbus aucuparia has pinnately compound leaves with 9-15 narrow, finely serrated leaflets that are smaller and more numerous than most other compound-leaved trees."
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Spiraea_japonica_%E3%82%B7%E3%83%A2%E3%83%84%E3%82%B1%EF%BC%88%E4%B8%8B%E9%87%8E%29_DSCF3559.jpg/1920px-Spiraea_japonica_%E3%82%B7%E3%83%A2%E3%83%84%E3%82%B1%EF%BC%88%E4%B8%8B%E9%87%8E%29_DSCF3559.jpg",
+                answers: {q1: "Spiraea japonica", q2: "Japanese spirea", q3: "Rosaceae", q4: "D sh"},
+                leafInfo: "The leaves are dark green and lustrous and1 to 3 inches long when mature. Serrate to double serrate margins. They are somewhat glaucous with downy veins beneath.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://www.plantes-et-nature.fr/31423-large_default/tilia_flavescens_glenleven_tilleul_flavescens.jpg",
+                answers: {q1: "Tilia x flavescens 'Glenleven'", q2: "Glenleven linden", q3: "Malvaceae", q4: "D tr"},
+                leafInfo: "Tilia x flavescens 'Glenleven' has simple, alternate leaves that are large (4-6 inches long), heart-shaped (cordate) with serrated margins and an asymmetrical base.",
+                distinguishInfo: "Tilia tomentosa has densely silvery-white tomentose (fuzzy) leaf undersides that create a shimmering effect in the wind, while Tilia x flavescens 'Glenleven' has much less pubescent, greener undersides."
+            },
+            {
+                image: "https://i0.wp.com/www.onlineflowergarden.com/wp-content/uploads/Viburnum-plicatum-var-tomentosum-5236.jpeg?w=600&ssl=1",
+                answers: {q1: "Viburnum plicatum var. tomentosum", q2: "doublefile viburnum", q3: "Viburnaceae", q4: "D sh"},
+                leafInfo: "Viburnum plicatum var. tomentosum has simple, opposite leaves that are oval to oblong with deeply impressed veins creating a distinctive pleated or ribbed texture.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Starr_071024-0034_Yucca_filamentosa.jpg/1024px-Starr_071024-0034_Yucca_filamentosa.jpg",
+                answers: {q1: "Yucca filamentosa", q2: "thread yucca", q3: "Asparagaceae", q4: "E p"},
+                leafInfo: "Stemless leaves are in a basal rosette, simple, sword-shaped, apex sharply pointed, margins usually inrolled and contain curly thread-like filaments. Up to 18 inches long and 2 inches wide.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://d7rks6gxdl569.cloudfront.net/thumbnails/robnl1.jpg",
+                answers: {q1: "Rosa 'Meidomonac' (Bonica)", q2: "Bonica rose", q3: "Rosaceae", q4: "D sh"},
+                leafInfo: "The leaves are compound and alternate with glabrous and lustrous surfaces. The compound leaves are odd-pinnate.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Black_Locust_Leaf_Close_Up.jpg/800px-Black_Locust_Leaf_Close_Up.jpg",
+                answers: {q1: "Robinia pseudoacacia 'Frisia'", q2: "Frisian black locust", q3: "Fabaceae", q4: "D tr"},
+                leafInfo: "Robinia pseudoacacia 'Frisia' has pinnately compound leaves with 7-19 oval leaflets arranged along a central rachis, with paired stipular spines at the base of each leaf. The distinctive feature is the bright golden-yellow foliage color.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/2014-10-30_10_49_37_Red_Oak_foliage_during_autumn_on_Farrell_Avenue_in_Ewing%2C_New_Jersey.JPG/1920px-2014-10-30_10_49_37_Red_Oak_foliage_during_autumn_on_Farrell_Avenue_in_Ewing%2C_New_Jersey.JPG",
+                answers: {q1: "Quercus rubra", q2: "red oak", q3: "Fagaceae", q4: "D tr"},
+                leafInfo: "The 7-inch leaves are divided less than halfway to the mid-vein into 7-11 shallow wavy lobes with a few irregular bristle-tipped teeth. The leaves are glabrous and dull green above and light dull green below with tufts of hairs in the vein angles.",
+                distinguishInfo: "Quercus palustris (pin oak) has deeply cut, narrow sinuses that extend nearly to the midrib, while Quercus rubra (red oak) has broader lobes with shallower, more U-shaped sinuses."
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Quercus-palustris.JPG/559px-Quercus-palustris.JPG",
+                answers: {q1: "Quercus palustris", q2: "pin oak", q3: "Fagaceae", q4: "D tr"},
+                leafInfo: "5-inch glossy green leaves have 5 bristle-tipped lobes and U-shaped sinuses, which cut deeply to the midrib. At the tip of the leaf, the vein pierces through the margin of the leaf. The leaves are the same color green on both sides.",
+                distinguishInfo: "Quercus palustris (pin oak) has deeply cut, narrow sinuses that extend nearly to the midrib, while Quercus rubra (red oak) has broader lobes with shallower, more U-shaped sinuses."
+            },
+            {
+                image: "https://landscapeplants.oregonstate.edu/sites/plantid7/files/plantimage/clmor10.jpg",
+                answers: {q1: "Clematis montana", q2: "mountain clematis", q3: "Ranuculaceae", q4: "D cl"},
+                leafInfo: "Compound leaves with ovate leaflets that vary in shape depending on the cultivar.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://d7rks6gxdl569.cloudfront.net/thumbnails/coewl1.jpg",
+                answers: {q1: "Cornus 'Eddie's White Wonder'", q2: "Eddie's White Wonder dogwood", q3: "Cornaceae", q4: "D tr"},
+                leafInfo: "The leaves are simple and opposite which are elliptic or ovate, with spectacular fall colour.",
+                distinguishInfo: "Cornus kousa leaves are more elliptical with distinctive rusty brown tufts of hair in the vein axils on the underside, while Cornus 'Eddie's White Wonder' has broader, more ovate leaves with whitish or grayish pubescence underneath."
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Dasiphora_fruticosa_5698.jpg/800px-Dasiphora_fruticosa_5698.jpg",
+                answers: {q1: "Dasiphora fruticosa", q2: "shrubby cinquefoil", q3: "Rosaceae", q4: "D sh N"},
+                leafInfo: "The leaves are medium blue-green to dark green with 3 to 7 narrow leaflets. Leaves will turn a yellow-brown color in the fall.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://www.shelbyarboretum.org/images/trees/Akebono%20Cherry/_1200x630_crop_center-center_82_none/Cherry%20Tree%20(Akebono);%20Prunus%20x%20yedoensis;%20Leaves%201.jpg?mtime=1661534022",
+                answers: {q1: "Prunus yedoensis 'Akebono'", q2: "daybreak cherry", q3: "Rosaceae", q4: "D tr"},
+                leafInfo: "The leaves are glossy dark green, simple, alternate, and measure 2 to 4 inches long and 1.5 to 2.5 inches wide. They have double serrate or serrate margins. The leaf shape is elliptical, ovate, or obovate with acuminate tips.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Karayemi%C5%9F-2.JPG/500px-Karayemi%C5%9F-2.JPG",
+                answers: {q1: "Prunus laurocerasus 'Otto Luyken'", q2: "Otto Luyken laurel", q3: "Rosaceae", q4: "E sh"},
+                leafInfo: "Leaves are evergreen, lustrous, alternate, simple, lanceolate to oblong, and entire, with at least 2 conspicuous glands on the underside of the leaf blade near the midrib.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://sublimegardens.com/wp-content/uploads/2023/05/image3-1-rotated-e1685400938877.jpeg",
+                answers: {q1: "Physocarpus opulifolius 'Monlo' (Diabolo)", q2: "Diabolo ninebark", q3: "Rosaceae", q4: "D sh"},
+                leafInfo: "Physocarpus opulifolius 'Monlo' (Diabolo) has simple, alternate leaves that are palmately lobed with 3-5 lobes and doubly serrated margins. The distinctive feature of this cultivar is the deep purple to burgundy foliage.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://landscapeplants.oregonstate.edu/sites/plantid7/files/styles/medium/public/plantimage/fasy92.jpg?itok=Veb6Ato9",
+                answers: {q1: "Fagus sylvatica", q2: "European beech", q3: "Fagaceae", q4: "D tr"},
+                leafInfo: "The leaves are ovate to elliptic, glossy, dark green above, and light green on the undersides. The margins are entire, undulated, and fringed with silky hairs when the leaves are young. The leaves measure 2 to 4 inches long and are alternate, simple, and pinnately veined with 7 to 9 pairs of veins.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Festuca_glauca_small.jpg/1920px-Festuca_glauca_small.jpg",
+                answers: {q1: "Festuca glauca", q2: "blue fescue", q3: "Poaceae", q4: "E g"},
+                leafInfo: "stiff rolled leaves; appears cylindrical; there is a ruff of dead leaves at the base",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://guzmansgreenhouse.com/wp-content/uploads/2020/11/raywood-ash-leaf.jpg",
+                answers: {q1: "Fraxinus angustifolia 'Raywood'", q2: "Raywood ash", q3: "Oleaceae", q4: "D tr"},
+                leafInfo: "The leaves are pinnately compound; opposite leaves or leaves whorled; leaflets are lanceolate",
+                distinguishInfo: "Fraxinus angustifolia 'Raywood' has narrower, more lance-shaped leaflets (7-9 per leaf) compared to both F. ornus and F. americana, which have broader, more ovate leaflets."
+            },
+            {
+                image: "https://d7rks6gxdl569.cloudfront.net/thumbnails/frorl1.jpg",
+                answers: {q1: "Fraxinus ornus", q2: "flowering ash", q3: "Oleaceae", q4: "D tr"},
+                leafInfo: "The leaves are opposite and compound with pinnate venation; the compounding is odd-pinnate. The fall colour is yellow, orange, or red.",
+                distinguishInfo: "Fraxinus ornus has smaller, more rounded leaflets compared to both F. angustifolia 'Raywood' (which has narrow, lance-shaped leaflets) and F. americana (which has larger, broader ovate leaflets)."
+            },
+            {
+                image: "https://www.tree-guide.com/images/styles/600x450-copy_/public/kentucky-coffee-tree-leaves.jpg?itok=5iKXubYU",
+                answers: {q1: "Gymnocladus dioicus", q2: "Kentucky coffee tree", q3: "Fabaceae", q4: "D tr"},
+                leafInfo: "The leaves are very large bluish-green and bipinnately compound, measuring up to 3 feet long and 2 feet wide with 5 to 9 pairs of leaflets with entire margins. They are pinkish bronze when they emerge in late spring",
+                distinguishInfo: "Gymnoclaudus dioicus has very large leaves with multiple leaflets, in contrast to any other tree in this plant list."
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Helictotrichon-sempervirens-habit.JPG/500px-Helictotrichon-sempervirens-habit.JPG",
+                answers: {q1: "Helictotrichon sempervirens", q2: "blue sea oats", q3: "Poaceae", q4: "E g"},
+                leafInfo: "The leaves are long and narrow on arching stems which taper to a fine point",
+                distinguishInfo: "Unlike Festuca glauca, the leaves of H. sempervirens are flatter and not rolled up as much."
+            },
+            {
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Tulip_Tree_NBG_LR.jpg/1920px-Tulip_Tree_NBG_LR.jpg",
+                answers: {q1: "Liriodendron tulipifera", q2: "tulip poplar", q3: "Magnoliaceae", q4: "D tr"},
+                leafInfo: "The leaves are simple, alternate, board truncate apex, 3 to 4 lobes, green, waxy, and smooth on the upper surface, and paler beneath",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://plantasflores.com/wp-content/uploads/2021/11/Malus-domestica.jpg",
+                answers: {q1: "Malus domestica", q2: "culinary apple", q3: "Rosaceae", q4: "D tr"},
+                leafInfo: "The leaves are simple and alternate, with very variable leaf shape and size. The underside has raised veins and may or may not be pubescent",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://plantsam.com/leaves/wp-content/uploads/sites/12/2020/08/Ribes-sanguineum-2.jpg",
+                answers: {q1: "Ribes sanguineum", q2: "winter flowering currant", q3: "Grossulariaceae", q4: "D sh N"},
+                leafInfo: "The leaves are simple, alternate, 1 to 3-inches long and wide, fragrant with a resinous scent, and have a dark matte green pubescence above, and white tomentose beneath. The leaf margins are irregularly serrate or crenate and have deep veins giving it a wrinkly appearance.",
+                distinguishInfo: ""
+            },
+            {
+                image: "https://www.nzpcn.org.nz/site/assets/files/0/43/220/qqq_fnyvk-rynrntabf-01p.240x240-u1i1s1q90f1.jpg",
+                answers: {q1: "Salix eleagnos", q2: "rosemary willow", q3: "Salicaceae", q4: "D sh"},
+                leafInfo: "Salix eleagnos has very narrow, linear, simple leaves arranged alternately that resemble rosemary leaves, hence its common name 'rosemary willow'. The leaves are silvery-gray or grayish-green, especially on the underside, and have smooth or slightly revolute (rolled under) margins.",
+                distinguishInfo: ""
+            }
+        ];
+
+        let currentPlant = 0;
+        let submitted = false;
+        let missedPlants = [];
+        let plantOrder = [];
+
+        function shuffleArray(arr) {
+            const array = [...arr];
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function initializeQuiz() {
+            plantOrder = shuffleArray([...Array(plants.length).keys()]);
+            currentPlant = 0;
+            missedPlants = [];
+            loadPlant();
+        }
+
+        function loadPlant() {
+            submitted = false;
+            document.getElementById('submitBtn').style.display = 'block';
+            document.getElementById('submitBtn').textContent = 'Submit Answers';
+            document.getElementById('scoreDisplay').classList.remove('show');
+            document.getElementById('plantInfo').classList.remove('show');
+            document.getElementById('navigationButtons').style.display = 'none';
+
+            const plantIndex = plantOrder[currentPlant];
+            document.getElementById('plantImage').src = plants[plantIndex].image;
+            document.getElementById('plantCounter').textContent = `Plant ${currentPlant + 1} of ${plants.length}`;
+
+            for (let i = 1; i <= 4; i++) {
+                const input = document.getElementById(`q${i}`);
+                const answer = document.getElementById(`answer${i}`);
+                input.value = '';
+                input.disabled = false;
+                input.classList.remove('correct', 'incorrect');
+                answer.classList.remove('show');
+                answer.textContent = '';
+            }
+        }
+
+        function submitQuiz() {
+            console.log('Submit button clicked');
+            if (submitted) {
+                loadPlant();
+                return;
+            }
+
+            let correctCount = 0;
+            const plantIndex = plantOrder[currentPlant];
+            const currentAnswers = plants[plantIndex].answers;
+            let plantMissed = false;
+
+            for (let i = 1; i <= 4; i++) {
+                const input = document.getElementById(`q${i}`);
+                const answer = document.getElementById(`answer${i}`);
+                const userAnswer = input.value.trim();
+                const correctAnswer = currentAnswers[`q${i}`];
+
+                if (userAnswer === '') {
+                    alert('Please answer all questions!');
+                    return;
+                }
+
+                if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                    input.classList.add('correct');
+                    correctCount++;
+                } else {
+                    input.classList.add('incorrect');
+                    answer.textContent = `Correct answer: ${correctAnswer}`;
+                    answer.classList.add('show');
+                    plantMissed = true;
+                }
+
+                input.disabled = true;
+            }
+
+            if (plantMissed) {
+                missedPlants.push({
+                    index: plantIndex,
+                    name: plants[plantIndex].answers.q1,
+                    commonName: plants[plantIndex].answers.q2
+                });
+            }
+
+            document.getElementById('scoreDisplay').textContent = `Score: ${correctCount} out of 4`;
+            document.getElementById('scoreDisplay').classList.add('show');
+
+            document.getElementById('leafInfo').textContent = plants[plantIndex].leafInfo;
+            document.getElementById('distinguishInfo').textContent = plants[plantIndex].distinguishInfo;
+            document.getElementById('plantInfo').classList.add('show');
+
+            document.getElementById('navigationButtons').style.display = 'flex';
+
+            if (correctCount === 4) {
+                document.getElementById('submitBtn').style.display = 'none';
+            } else {
+                document.getElementById('submitBtn').textContent = 'Try Again';
+            }
+            submitted = true;
+        }
+
+        function nextPlant() {
+            if (currentPlant < plants.length - 1) {
+                currentPlant++;
+                loadPlant();
+            } else {
+                showFinalResults();
+            }
+        }
+
+        function previousPlant() {
+            if (currentPlant > 0) {
+                currentPlant--;
+                loadPlant();
+            }
+        }
+
+        function showFinalResults() {
+            document.querySelector('.quiz-container').style.display = 'none';
+            document.getElementById('finalResults').style.display = 'block';
+            
+            const totalPlants = plants.length;
+            const missedCount = missedPlants.length;
+            const correctCount = totalPlants - missedCount;
+            const percentage = Math.round((correctCount / totalPlants) * 100);
+            
+            document.getElementById('finalScore').innerHTML = `
+                <h2>Review Complete!</h2>
+                <p style="font-size: 24px; margin: 20px 0;">You got ${correctCount} out of ${totalPlants} plants perfect (${percentage}%)</p>
+            `;
+            
+            if (missedCount === 0) {
+                document.getElementById('missedPlantsList').innerHTML = `
+                    <p style="color: #4caf50; font-size: 18px; font-weight: bold;">Perfect score!</p>
+                `;
+            } else {
+                let html = '<h3>Plants you need to review:</h3><ul>';
+                missedPlants.forEach(plant => {
+                    html += `<li><strong>${plant.name}</strong> (${plant.commonName})</li>`;
+                });
+                html += '</ul>';
+                document.getElementById('missedPlantsList').innerHTML = html;
+            }
+        }
+
+        function restartQuiz() {
+            document.querySelector('.quiz-container').style.display = 'block';
+            document.getElementById('finalResults').style.display = 'none';
+            initializeQuiz();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            document.getElementById('submitBtn').addEventListener('click', submitQuiz);
+            document.getElementById('nextBtn').addEventListener('click', nextPlant);
+            document.getElementById('prevBtn').addEventListener('click', previousPlant);
+            document.getElementById('restartBtn').addEventListener('click', restartQuiz);
+            initializeQuiz();
+        });
+    </script>
+</body>
+
+</html>
+
+

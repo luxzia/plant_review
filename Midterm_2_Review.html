@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LARC 316 Midterm Test Prep</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #a8e6cf 0%, #dcedc8 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .plant-counter {
+            text-align: center;
+            color: #2e7d32;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .image-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .image-wrapper {
+            text-align: center;
+        }
+
+        .image-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .plant-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+        }
+
+        .question {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #66bb6a;
+        }
+
+        .answer-input.correct {
+            border-color: #4caf50;
+            background-color: #f1f8f4;
+        }
+
+        .answer-input.incorrect {
+            border-color: #f44336;
+            background-color: #fef5f5;
+        }
+
+        .correct-answer-text {
+            margin-top: 5px;
+            color: #f44336;
+            font-size: 14px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .correct-answer-text.show {
+            display: block;
+        }
+
+        button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Roboto', 'Arial', sans-serif;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #222;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        .score-display {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #333;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .score-display.show {
+            display: block;
+        }
+
+        .plant-info {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #2e7d32;
+            display: none;
+        }
+
+        .plant-info.show {
+            display: block;
+        }
+
+        .plant-info h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .info-section {
+            margin-bottom: 15px;
+        }
+
+        .info-section h4 {
+            color: #555;
+            font-size: 15px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        #finalResults {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        #finalResults h2 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        #missedPlantsList {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        #missedPlantsList h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        #missedPlantsList ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #missedPlantsList li {
+            padding: 10px;
+            margin: 10px 0;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #f44336;
+        }
+
+        @media (max-width: 600px) {
+            .image-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>Plant Identification Review</h1>
+            <p style="color: #666;">All 73 plants on our midterm are on here - text me if something is broken, wrong, or anything in the What's App group</p>
+        </div>
+
+        <div class="plant-counter" id="plantCounter"></div>
+
+        <div class="image-container">
+            <div class="image-wrapper">
+                <div class="image-label">Habit</div>
+                <img id="habitImage" class="plant-image" alt="Plant habit">
+            </div>
+            <div class="image-wrapper">
+                <div class="image-label">Leaves/Flowers/Fruit</div>
+                <img id="detailImage" class="plant-image" alt="Plant details">
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question">1. What is the Latin name for this?</div>
+            <input type="text" id="q1" class="answer-input" placeholder="Type your answer here..." autocomplete="off">
+            <div class="correct-answer-text" id="answer1"></div>
+        </div>
+
+        <div class="question-block">
+            <div class="question">2. What is the common name for this plant?</div>
+            <input type="text" id="q2" class="answer-input" placeholder="Type your answer here..." autocomplete="off">
+            <div class="correct-answer-text" id="answer2"></div>
+        </div>
+
+        <div class="question-block">
+            <div class="question">3. What is the family of this plant?</div>
+            <input type="text" id="q3" class="answer-input" placeholder="Type your answer here..." autocomplete="off">
+            <div class="correct-answer-text" id="answer3"></div>
+        </div>
+
+        <div class="question-block">
+            <div class="question">4. What type of plant is this?</div>
+            <input type="text" id="q4" class="answer-input" placeholder="Type your answer here..." autocomplete="off">
+            <div class="correct-answer-text" id="answer4"></div>
+        </div>
+
+        <button id="submitBtn">Submit Answers</button>
+        
+        <div class="score-display" id="scoreDisplay"></div>
+
+        <div class="plant-info" id="plantInfo">
+            <h3>Additional Plant Information</h3>
+            <div class="info-section">
+                <h4>Leaf Characteristics</h4>
+                <p id="quickIDInfo"></p>
+            </div>
+            <div class="info-section">
+                <h4>How to Distinguish</h4>
+                <p id="distinguishInfo"></p>
+            </div>
+        </div>
+
+        <div class="button-group" id="navigationButtons" style="display: none;">
+            <button id="nextBtn">Next Plant</button>
+            <button id="prevBtn">Previous Plant</button>
+        </div>
+    </div>
+
+    <div id="finalResults" style="display: none;">
+        <div id="finalScore"></div>
+        <div id="missedPlantsList"></div>
+        <button id="restartBtn" style="margin-top: 30px;">Start New Review</button>
+    </div>
+
+    <script>
+        const plants = [
+            {
+                habitImage: "https://larnerseeds.com/cdn/shop/products/vine_maple_b.jpg?v=1602110120&width=1206",
+                detailImage: "https://www.treesandshrubsonline.org/site/assets/files/4029/acer-circinatum-10.jpg",
+                answers: {q1: "Acer circinatum", q2: "vine maple", q3: "Sapindaceae", q4: "D tr N"},
+                quickIDInfo: "This deciduous tree has a broad-spreading, fork-branched habit. Leaves are simple, lobed, and oppositely arranged with palmate venation, and they're notably soft and flexible. The stems are green and photosynthetic, allowing the plant to produce food even in shade.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://landscapeplants.oregonstate.edu/sites/plantid7/files/styles/medium/public/plantimage/acgld4566.jpg?itok=DHSLqgqz",
+                detailImage: "https://landscapeplants.oregonstate.edu/sites/plantid7/files/styles/medium/public/plantimage/acgld4206.jpg?itok=GJwh2fXn",
+                answers: {q1: "Acer glabrum var. douglasii", q2: "Douglas maple", q3: "Sapindaceae", q4: "D tr N"},
+                quickIDInfo: "This deciduous tree has an upright habit with an oval to vertical crown. Leaves are simple, 3-5 lobed, and papery with opposite arrangement and glabrous surfaces. The bark is grey, red, or brown, smooth and showy. Buds are ovoid or valvate shaped.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Tall_bigleaf_maple.JPG/800px-Tall_bigleaf_maple.JPG",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Acer_macrophyllum_leaf.jpg/500px-Acer_macrophyllum_leaf.jpg",
+                answers: {q1: "Acer macrophyllum", q2: "bigleaf maple", q3: "Sapindaceae", q4: "D tr N"},
+                quickIDInfo: "This deciduous tree has an open habit with an oval-horizontal to round crown. Leaves are simple and lobed with opposite arrangement, displaying an orbicular or reniform shape with well-defined sinuses and teeth that almost look like additional lobes. The petioles are notably thick. Bark is grey or brown and deeply fissured.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Achillea_millefolium_%28bright%29.jpg/500px-Achillea_millefolium_%28bright%29.jpg",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Achillea_millefolium_scan.jpg/250px-Achillea_millefolium_scan.jpg",
+                answers: {q1: "Achillea millefolium", q2: "yarrow", q3: "Asteraceae", q4: "D p N"},
+                quickIDInfo: "This deciduous perennial has a stiffly upright habit. Leaves are simple or dissected with alternate or basal arrangement and lanceolate or linear shapes. Stems are green.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://calscape.org/storage/app/species_images/calphotos/images/0000_0000_1015_1852.jpeg",
+                detailImage: "https://images.squarespace-cdn.com/content/v1/61f1bd75062cff2f00133bbc/adca3cc1-668c-46b8-b7dc-2cb8072b2c13/Kinnikinnick+-+MG.png?format=2500w",
+                answers: {q1: "Arctostaphylos uva-ursi", q2: "kinnikinnick", q3: "Ericaceae", q4: "E sh N"},
+                quickIDInfo: "This evergreen shrub has a horizontal, spreading habit. Leaves are simple, leathery, and alternately arranged with elliptic, oblanceolate, obovate, or spatulate shapes. Stems are red, and buds are ovoid. The red exfoliating bark is distinctive.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Blechnum_spicant_%28fertile_and_sterile_fronts%29.jpg/500px-Blechnum_spicant_%28fertile_and_sterile_fronts%29.jpg",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Blechnum.spicant.2.jpg/250px-Blechnum.spicant.2.jpg",
+                answers: {q1: "Blechnum spicant", q2: "deer fern", q3: "Blechnaceae", q4: "E g N"},
+                quickIDInfo: "This evergreen fern has an arching, spreading, and upright habit. Leaves are dimorphic, compound, basally arranged, and bi-pinnate in structure.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Malus_fusca_%28Raf.%29_C.K.Schneid._cultivated_at_Royal_Botanic_Gardens%2C_Kew.jpg/330px-Malus_fusca_%28Raf.%29_C.K.Schneid._cultivated_at_Royal_Botanic_Gardens%2C_Kew.jpg",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Malusfusca.jpg/500px-Malusfusca.jpg",
+                answers: {q1: "Malus fusca", q2: "Pacific crabapple", q3: "Rosaceae", q4: "D sh N"},
+                quickIDInfo: "This deciduous tree has a twiggy, upright habit. Leaves are simple and alternate with pinnate venation and can be elliptic, oblong, or ovate in shape. They have serrated edges or are pinnately lobed, and may be single-lobed or without lobes. Buds are conical and long-pointed. Bark is grey, orange, or brown, plated and moderately fissured.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Myrica-gale-hunlig.JPG",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Myrica-gale-foliage-male-catkins.jpg/500px-Myrica-gale-foliage-male-catkins.jpg",
+                answers: {q1: "Myrica gale", q2: "sweet gale", q3: "Myricaceae", q4: "D sh N"},
+                quickIDInfo: "This deciduous shrub has an upright habit. Leaves are whorled, simple, and alternate with oblanceolate shapes and serrated edges. The bark is grey or brown and smooth with prominent lenticels. Buds develop as catkins, and the plant is wind-pollinated.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://upload.wikimedia.org/wikipedia/en/thumb/3/36/Indian_Plum.JPG/500px-Indian_Plum.JPG",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Oemleria_cerasiformis_07.jpg/500px-Oemleria_cerasiformis_07.jpg",
+                answers: {q1: "Omeleria cerasiformis", q2: "oso berry", q3: "Rosaceae", q4: "D sh N"},
+                quickIDInfo: "This deciduous shrub has a cherry-like habit. Leaves are simple and alternate with lanceolate or oblong shapes and dentate edges (not serrate or rounded), and they smell like cucumber. Buds are narrowly conical, and the bark is brown and smooth with prominent lenticels.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://www.arboretum.purdue.edu/explorer/wp-content/uploads/sites/2/2023/08/NAME_179_F_habit-600x400.jpg",
+                detailImage: "https://www.arboretum.purdue.edu/explorer/wp-content/uploads/sites/2/2023/01/NAME-179-6-600x400.jpg",
+                answers: {q1: "Cornus sericea", q2: "red osier dogwood", q3: "Cornaceae", q4: "D sh N"},
+                quickIDInfo: "This deciduous shrub can grow very large, up to 10 m tall, with a dense, spreading, upright habit. Leaves are arcuate and pinnate with a waxy texture and white undersides. The red stems are distinctive, and buds are red or tan.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Redwood_Sorrel_%28Oxalis_oregana%29_-_Flickr_-_brewbooks_%281%29.jpg/500px-Redwood_Sorrel_%28Oxalis_oregana%29_-_Flickr_-_brewbooks_%281%29.jpg",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Oxalis_oregana_1853.JPG/500px-Oxalis_oregana_1853.JPG",
+                answers: {q1: "Oxalis oregana", q2: "redwood sorrel", q3: "Oxalidaceae", q4: "sE p N"},
+                quickIDInfo: "This semi-evergreen perennial has a dense, spreading habit. Leaves are trifoliate, compound, and basally arranged with orbicular shapes.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Philadelphus_lewisii_1.jpg/500px-Philadelphus_lewisii_1.jpg",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Philadelphus_lewisii_5.jpg/500px-Philadelphus_lewisii_5.jpg",
+                answers: {q1: "Philadelphus lewisii", q2: "Lewis' mock orange", q3: "Hydrangeaceae", q4: "D sh N"},
+                quickIDInfo: "This deciduous shrub has a stiffly upright habit. Leaves are simple, opposite, heavily veined, and tomentose with elliptic or ovate shapes and entire or serrated margins. Buds are rounded or globular, and bark is grey, tan, or brown and lightly fissured.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Polystichum_munitum_%28Jami_Dwyer%29_001.jpg/500px-Polystichum_munitum_%28Jami_Dwyer%29_001.jpg",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Polystichum_munitum_JHT_IMG_2235_cropped.jpg/250px-Polystichum_munitum_JHT_IMG_2235_cropped.jpg",
+                answers: {q1: "Polystichum munitum", q2: "western sword fern", q3: "Dryopteridaceae", q4: "E ph N"},
+                quickIDInfo: "This evergreen fern has an arching habit and can grow up to 1 m high and 1-1.5 m wide. Leaves are nearly pinnate compound and basally arranged with pinnate structure and a pointed tip. The leaf shape resembles a halberd, hence the common name 'sword fern.'",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://landscapeplants.oregonstate.edu/sites/plantid7/files/styles/medium/public/plantimage/rhgroe8387A.jpg?itok=5I_RieSz",
+                detailImage: "https://landscapeplants.oregonstate.edu/sites/plantid7/files/styles/medium/public/plantimage/rhgoen950.jpg?itok=nJXkoo5V",
+                answers: {q1: "Rhododendron groenlandicum", q2: "Labrador tea", q3: "Ericaceae", q4: "E sh N"},
+                quickIDInfo: "This evergreen shrub can grow up to 2 m tall, though in full sun it grows to less than 1 m. Leaves are simple, alternate, leathery, and elliptically shaped with fluffy indumentum. Buds are grey and smooth, and stems are grey.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://www.photocrati.com/wp-content/uploads/2009/08/sharpensat-1.jpg",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Rhododendron_macrophyllum_4861.JPG/500px-Rhododendron_macrophyllum_4861.JPG",
+                answers: {q1: "Rhododendron macrophyllum", q2: "Pacific rhododendron", q3: "Ericaceae", q4: "E sh N"},
+                quickIDInfo: "This evergreen shrub has an onion-top habit. Leaves are simple, alternate, and leathery, arranged in a ruff at the terminals. Below the terminal bud there are few leaves, making the year's growth clearly marked. Bark is brown and lightly fissured, and stems are brown.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://landscapeplants.oregonstate.edu/sites/plantid7/files/styles/medium/public/plantimage/ronut468A.jpg?itok=4NZzRG89g",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Rosa_nutkana_with_sepals.JPG/500px-Rosa_nutkana_with_sepals.JPG",
+                answers: {q1: "Rosa nutkana", q2: "Nootka rose", q3: "Rosaceae", q4: "D sh N"},
+                quickIDInfo: "This deciduous shrub forms thickets through suckering growth. Leaves are resilient, compound, and alternate with odd-pinnate compounding. Stems have sharp prickles, and the multi-stem trunk displays varied bark colors.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Thimbleberry_Textures_%283629325115%29.jpg/960px-Thimbleberry_Textures_%283629325115%29.jpg",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Rubus_parviflorus_9481.JPG/500px-Rubus_parviflorus_9481.JPG",
+                answers: {q1: "Rubus parviflorus", q2: "thimbleberry", q3: "Rosaceae", q4: "D sh N"},
+                quickIDInfo: "This deciduous shrub can grow up to 2 m tall. Leaves are simple, alternate, and orbicular or reniform shaped. The plant has giant axillary buds, and notably the stems have no prickles. Bark is brown, exfoliating, and multi-stemmed.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://nativeplantspnw.com/wp-content/uploads/2016/08/Rubus-spectabilis.png",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Rubus_spectabilis_%27Olympic_Double%27_Leaves.JPG/500px-Rubus_spectabilis_%27Olympic_Double%27_Leaves.JPG",
+                answers: {q1: "Rubus spectabilis", q2: "salmonberry", q3: "Rosaceae", q4: "D sh N"},
+                quickIDInfo: "This deciduous shrub has a dense, upright habit. Leaves are trifoliate with lateral leaves that look like butterflies. Stems have prickles at the base, especially on older stems. Buds are ovoid, and the bark is distinctive with its orange, papery, exfoliating texture.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://www.cramer.ca/wp-content/uploads/2014/04/Symphoricarpos-Albus-2-225x300.jpg",
+                detailImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Symphoricarpos_albus_003.JPG/500px-Symphoricarpos_albus_003.JPG",
+                answers: {q1: "Symphoricarpos albus", q2: "snowberry", q3: "Caprifoliaceae", q4: "D sh N"},
+                quickIDInfo: "This deciduous shrub has a dense, twiggy habit with wire-like stems. Leaves are opposite, with suckers producing large leaves that can be lobed and undulate, elliptic or ovate in shape. Buds are ovoid, and the bark is smooth and brown.",
+                distinguishInfo: ""
+            },
+            {
+                habitImage: "https://landscapeplants.oregonstate.edu/sites/plantid7/files/styles/medium/public/plantimage/vaov5726B.jpg?itok=X0-bVRUr",
+                detailImage: "https://landscapeplants.oregonstate.edu/sites/plantid7/files/plantimage/vaov4952.jpg",
+                answers: {q1: "Vaccinium ovatum", q2: "evergreen blueberry", q3: "Ericaceae", q4: "E sh N"},
+                quickIDInfo: "This evergreen shrub can grow up to 3 m high but is typically about 1.5 m. Leaves are alternate, ovate-lanceolate, and serrate. Stems are red, tan, or brown, and the bark is exfoliating.",
+                distinguishInfo: ""
+            },
+        ];
+
+        let currentPlant = 0;
+        let submitted = false;
+        let missedPlants = [];
+        let plantOrder = [];
+
+        function shuffleArray(arr) {
+            const array = [...arr];
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function initializeQuiz() {
+            plantOrder = shuffleArray([...Array(plants.length).keys()]);
+            currentPlant = 0;
+            missedPlants = [];
+            loadPlant();
+        }
+
+        function loadPlant() {
+            submitted = false;
+            document.getElementById('submitBtn').style.display = 'block';
+            document.getElementById('submitBtn').textContent = 'Submit Answers';
+            document.getElementById('scoreDisplay').classList.remove('show');
+            document.getElementById('plantInfo').classList.remove('show');
+            document.getElementById('navigationButtons').style.display = 'none';
+
+            const plantIndex = plantOrder[currentPlant];
+            document.getElementById('habitImage').src = plants[plantIndex].habitImage;
+            document.getElementById('detailImage').src = plants[plantIndex].detailImage;
+            document.getElementById('plantCounter').textContent = `Plant ${currentPlant + 1} of ${plants.length}`;
+
+            for (let i = 1; i <= 4; i++) {
+                const input = document.getElementById(`q${i}`);
+                const answer = document.getElementById(`answer${i}`);
+                input.value = '';
+                input.disabled = false;
+                input.classList.remove('correct', 'incorrect');
+                answer.classList.remove('show');
+                answer.textContent = '';
+            }
+        }
+
+        function submitQuiz() {
+            console.log('Submit button clicked');
+            if (submitted) {
+                loadPlant();
+                return;
+            }
+
+            let correctCount = 0;
+            const plantIndex = plantOrder[currentPlant];
+            const currentAnswers = plants[plantIndex].answers;
+            let plantMissed = false;
+
+            for (let i = 1; i <= 4; i++) {
+                const input = document.getElementById(`q${i}`);
+                const answer = document.getElementById(`answer${i}`);
+                const userAnswer = input.value.trim();
+                const correctAnswer = currentAnswers[`q${i}`];
+
+                if (userAnswer === '') {
+                    alert('Please answer all questions!');
+                    return;
+                }
+
+                if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                    input.classList.add('correct');
+                    correctCount++;
+                } else {
+                    input.classList.add('incorrect');
+                    answer.textContent = `Correct answer: ${correctAnswer}`;
+                    answer.classList.add('show');
+                    plantMissed = true;
+                }
+
+                input.disabled = true;
+            }
+
+            if (plantMissed) {
+                missedPlants.push({
+                    index: plantIndex,
+                    name: plants[plantIndex].answers.q1,
+                    commonName: plants[plantIndex].answers.q2
+                });
+            }
+
+            document.getElementById('scoreDisplay').textContent = `Score: ${correctCount} out of 4`;
+            document.getElementById('scoreDisplay').classList.add('show');
+
+            document.getElementById('quickIDInfo').textContent = plants[plantIndex].quickIDInfo;
+            document.getElementById('distinguishInfo').textContent = plants[plantIndex].distinguishInfo;
+            document.getElementById('plantInfo').classList.add('show');
+
+            document.getElementById('navigationButtons').style.display = 'flex';
+
+            if (correctCount === 4) {
+                document.getElementById('submitBtn').style.display = 'none';
+            } else {
+                document.getElementById('submitBtn').textContent = 'Try Again';
+            }
+            submitted = true;
+        }
+
+        function nextPlant() {
+            if (currentPlant < plants.length - 1) {
+                currentPlant++;
+                loadPlant();
+            } else {
+                showFinalResults();
+            }
+        }
+
+        function previousPlant() {
+            if (currentPlant > 0) {
+                currentPlant--;
+                loadPlant();
+            }
+        }
+
+        function showFinalResults() {
+            document.querySelector('.quiz-container').style.display = 'none';
+            document.getElementById('finalResults').style.display = 'block';
+            
+            const totalPlants = plants.length;
+            const missedCount = missedPlants.length;
+            const correctCount = totalPlants - missedCount;
+            const percentage = Math.round((correctCount / totalPlants) * 100);
+            
+            document.getElementById('finalScore').innerHTML = `
+                <h2>Review Complete!</h2>
+                <p style="font-size: 24px; margin: 20px 0;">You got ${correctCount} out of ${totalPlants} plants perfect (${percentage}%)</p>
+            `;
+            
+            if (missedCount === 0) {
+                document.getElementById('missedPlantsList').innerHTML = `
+                    <p style="color: #4caf50; font-size: 18px; font-weight: bold;">Perfect score!</p>
+                `;
+            } else {
+                let html = '<h3>Plants you need to review:</h3><ul>';
+                missedPlants.forEach(plant => {
+                    html += `<li><strong>${plant.name}</strong> (${plant.commonName})</li>`;
+                });
+                html += '</ul>';
+                document.getElementById('missedPlantsList').innerHTML = html;
+            }
+        }
+
+        function restartQuiz() {
+            document.querySelector('.quiz-container').style.display = 'block';
+            document.getElementById('finalResults').style.display = 'none';
+            initializeQuiz();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            document.getElementById('submitBtn').addEventListener('click', submitQuiz);
+            document.getElementById('nextBtn').addEventListener('click', nextPlant);
+            document.getElementById('prevBtn').addEventListener('click', previousPlant);
+            document.getElementById('restartBtn').addEventListener('click', restartQuiz);
+            initializeQuiz();
+        });
+    </script>
+</body>
+</html>
